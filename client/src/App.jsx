@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-const API_URL = "https://personal-task-manager-api-zqhg.onrender.com";
+const API_URL = "http://localhost:5000";
 
 function App() {
   const [tasks, setTasks] = useState([]);
