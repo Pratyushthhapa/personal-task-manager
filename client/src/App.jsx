@@ -11,6 +11,7 @@ function App() {
   const [dueDate, setDueDate] = useState("");
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("date");
 
   const fetchTasks = async () => {
     try {
@@ -89,19 +90,27 @@ function App() {
   fetchTasks();
 };
 
-const filteredTasks = tasks.filter((task) => {
-  const matchesSearch = task.title
-    .toLowerCase()
-    .includes(searchTerm.toLowerCase());
+const filteredTasks = tasks
+  .filter((task) => {
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
-  if (filter === "active")
-    return !task.completed && matchesSearch;
+    if (filter === "active")
+      return !task.completed && matchesSearch;
 
-  if (filter === "completed")
-    return task.completed && matchesSearch;
+    if (filter === "completed")
+      return task.completed && matchesSearch;
 
-  return matchesSearch;
-});
+    return matchesSearch;
+  })
+  .sort((a, b) => {
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    }
+
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
 
   const activeCount = tasks.filter((t) => !t.completed).length;
   const completedCount = tasks.filter((t) => t.completed).length;
@@ -145,6 +154,15 @@ const filteredTasks = tasks.filter((task) => {
   onChange={(e) => setSearchTerm(e.target.value)}
   className="search-box"
 />
+
+      <select
+      className="sort-select"
+  value={sortBy}
+  onChange={(e) => setSortBy(e.target.value)}
+>
+  <option value="date">Due Date</option>
+  <option value="title">Title A-Z</option>
+</select>
 
       <div className="filters">
        <button
